@@ -6,18 +6,14 @@
 #include <Ethernet.h> 
 
 
-File myFile;
+File myFile;            //The Log file
 boolean i = 0;
-boolean ligado;
 int si = 0, sf = 0;
 float sum;
 int pot = 60;
 tmElements_t tm;
 
 void setup() {
-  // put your setup code here, to run once:
-  pinMode(2, OUTPUT);
-//  Ethernet.begin(mac, ip);
   Serial.begin(9600);
   while(!Serial);
   Serial.print("Initializing SD card...");
@@ -26,14 +22,13 @@ void setup() {
     return;
   }
   Serial.println("initialization done.");
+  pinMode(2, OUTPUT);
   digitalWrite(2, LOW);
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:  
+void loop() { 
   if(analogRead(0) > 450 && i == 1) {
-    ligado = LOW;
-    digitalWrite(2, ligado);
+    digitalWrite(2, LOW);
     sf = tm.Second + 60*tm.Minute + 3600*tm.Hour;
       if (sf < si) 
         sf = sf + 24*60*60 - si;
@@ -58,13 +53,11 @@ void loop() {
     myFile.println();
     i = 0;
     myFile.close();
-    
   }
   else {
     if(analogRead(0) < 250 && i == 0) {
       myFile = SD.open("arquivo.txt", FILE_WRITE);
-      ligado = HIGH;
-      digitalWrite(2, ligado);
+      digitalWrite(2, HIGH);
       myFile.println("Lampada ligada as:");
       si = tm.Second + 60*tm.Minute + 3600*tm.Hour;
       print2digits(tm.Hour);
@@ -82,6 +75,10 @@ void loop() {
       i = 1;
     }
   }
+  checkRTC();
+}
+
+void checkRTC () {
   if (!RTC.read(tm)) {
     if (RTC.chipPresent()) {
       Serial.println("The DS1307 is stopped.  Please run the SetTime");
@@ -92,7 +89,6 @@ void loop() {
       Serial.println();
     }
   }
-  
 }
 
 void print2digits(int number) {
