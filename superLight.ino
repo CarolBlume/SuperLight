@@ -85,7 +85,7 @@ void checkRTC () {
       Serial.println("example to initialize the time and begin running.");
       Serial.println();
     } else {
-      Serial.println("DS1307 read error!  Please check the circuitry.");
+      Serial.println("DS1307 read error!  Please check the circuitry, modified");
       Serial.println();
     }
   }
